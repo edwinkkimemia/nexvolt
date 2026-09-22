@@ -1,5 +1,7 @@
 import Link from "next/link"
+import ContactForm from "@/components/contact/ContactForm"
 export const metadata = { title:"Contact NexVolt Kenya — Nairobi HQ, WhatsApp, Call | @nexvolttechke", description:"Contact NexVolt Technologies Nairobi: +254 700 000 000, WhatsApp @nexvolttechke, info@nexvolt.co.ke. Mon-Sat 8-6 EAT. Nationwide service." }
+
 export default function ContactPage(){
   return (
     <div className="bg-white">
@@ -26,17 +28,7 @@ export default function ContactPage(){
           </div>
           <div className="rounded-2xl border border-zinc-200 p-5 bg-zinc-50"><div className="text-sm font-bold">Map — Nairobi HQ</div><div className="mt-3 h-48 rounded-xl bg-white border border-zinc-200 grid place-items-center text-xs text-zinc-500">Google Maps embed ready — configure API key via env • @nexvolttechke</div></div>
         </div>
-        <form className="rounded-2xl border border-zinc-200 p-6 bg-white shadow-sm">
-          <h2 className="font-bold">Send us a message</h2>
-          <p className="text-sm text-zinc-600 mt-1">Engineer replies in 2 hours. For instant quote, WhatsApp instead.</p>
-          <div className="mt-4 grid sm:grid-cols-2 gap-3">
-            <input placeholder="Name" className="h-11 rounded-xl border px-3 text-sm"/><input placeholder="Email" className="h-11 rounded-xl border px-3 text-sm"/>
-            <input placeholder="Phone" className="h-11 rounded-xl border px-3 text-sm"/><input placeholder="Subject" className="h-11 rounded-xl border px-3 text-sm"/>
-          </div>
-          <textarea placeholder="Message — e.g. 5kW solar for 3BR in Karen" className="mt-3 w-full rounded-xl border p-3 text-sm h-28"/>
-          <button className="mt-4 w-full h-11 rounded-full bg-zinc-900 text-white font-bold">Send Message</button>
-          <a href="https://wa.me/254700000000" target="_blank" className="mt-2 w-full h-11 rounded-full bg-[#25D366] text-white font-bold grid place-items-center text-sm">Faster via WhatsApp @nexvolttechke</a>
-        </form>
+        <ContactForm />
       </div>
       <div className="border-t border-zinc-200 bg-zinc-50">
         <div className="mx-auto max-w-[1280px] px-6 py-6">

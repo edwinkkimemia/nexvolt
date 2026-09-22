@@ -2,6 +2,7 @@ import Link from "next/link"
 import { mockOrders } from "@/lib/mockAccount"
 import { formatKES } from "@/lib/utils"
 import { Check } from "lucide-react"
+import InvoiceButton from "@/components/account/InvoiceButton"
 
 export async function generateStaticParams() { return mockOrders.map((o) => ({ id: o.id })) }
 
@@ -22,7 +23,7 @@ export default function OrderTracking({ params }: { params: { id: string } }) {
           <div className="flex justify-between font-black pt-1"><span>Total</span><span>{formatKES(o.total)}</span></div>
         </div>
         <div className="mt-3 flex gap-2">
-          <button className="flex-1 h-10 rounded-full border border-zinc-300 text-sm font-bold hover:bg-zinc-50">Download Invoice (PDF)</button>
+          <InvoiceButton order={o} />
           <Link href="/shop" className="flex-1 h-10 rounded-full bg-zinc-900 text-white text-sm font-bold grid place-items-center">Reorder Items</Link>
         </div>
       </div>

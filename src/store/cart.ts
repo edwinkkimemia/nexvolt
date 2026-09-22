@@ -12,6 +12,7 @@ type CartState = {
   toggleWishlist: (slug: string) => void
   toggleCompare: (slug: string) => void
   clearCompare: () => void
+  clear: () => void
   count: () => number
   total: () => number
 }
@@ -40,6 +41,7 @@ export const useCart = create<CartState>((set, get) => ({
     else if(c.length<4) set({ compare: [...c, slug] })
   },
   clearCompare: ()=> set({ compare: [] }),
+  clear: ()=> set({ items: [] }),
   count: ()=> get().items.reduce((a,b)=>a+b.qty,0),
   total: ()=> get().items.reduce((a,b)=>a+b.qty*(b.product.salePrice ?? b.product.price),0),
 }))

@@ -1,4 +1,5 @@
 import Link from "next/link"
+import NewsletterForm from "@/components/layout/NewsletterForm"
 export default function Footer(){
   return (
     <footer className="bg-[#050507] border-t border-white/5 pt-14">
@@ -93,10 +94,7 @@ export default function Footer(){
 
         <div className="mt-10 rounded-2xl border border-white/5 bg-white/[0.03] p-4 flex flex-col md:flex-row gap-4 items-center justify-between">
           <div className="text-sm text-zinc-400">Subscribe to NexVolt Insights — technology drops & system guides.</div>
-          <div className="flex w-full md:w-auto gap-2">
-            <input placeholder="Email address" className="h-10 flex-1 md:w-72 rounded-full bg-white/5 border border-white/10 px-4 text-sm outline-none placeholder:text-zinc-500 focus:border-sky-500/50 text-white"/>
-            <button className="h-10 px-6 rounded-full bg-white text-black text-xs font-bold tracking-widest">SUBSCRIBE</button>
-          </div>
+          <NewsletterForm />
         </div>
         <div className="mt-6 flex flex-col md:flex-row items-center justify-between gap-3 border-t border-white/5 py-6 text-xs text-zinc-500">
           <span>© 2026 NexVolt Technologies — Nairobi, Kenya. All rights reserved.</span>
