@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { --nav-h: 64px; }
+
+html { scroll-behavior: smooth; }
+body {
+  @apply bg-white text-zinc-900 antialiased;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-feature-settings: "ss01" "ss02";
+}
+h1,h2,h3,.font-display { font-family: var(--font-display), system-ui, sans-serif; letter-spacing:-0.02em; }
+.font-mono { font-family: var(--font-mono), monospace; }
+
+.glass {
+  @apply bg-white backdrop-blur-xl border border-zinc-200 shadow-sm;
+}
+.glass-strong {
+  @apply bg-white backdrop-blur-2xl border border-zinc-200 shadow-lg;
+}
+.text-gradient {
+  background: linear-gradient(90deg, #0EA5E9 0%, #06B6D4 50%, #10B981 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.grid-overlay {
+  background-image:
+    linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+.shimmer {
+  position: relative; overflow: hidden;
+}
+.shimmer::after {
+  content:""; position:absolute; inset:0;
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.04), transparent);
+  transform: translateX(-100%); animation: shimmer 2.5s infinite;
+}
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 999px; }
+::-webkit-scrollbar-track { background: #f4f4f5; }
