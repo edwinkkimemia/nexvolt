@@ -1,5 +1,6 @@
 "use client"
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { products } from "@/lib/data"
 import { formatKES, productImages } from "@/lib/utils"
 import { useCart } from "@/store/cart"
@@ -10,6 +11,8 @@ import { ProductCard } from "@/components/shop/ProductCard"
 export default function ProductPage({ params }: { params:{slug:string}}){
   const p = products.find(x=>x.slug===params.slug) ?? products[0]
   const add = useCart(s=>s.add)
+  const router = useRouter()
+  const buyNow = () => { add(p.slug); router.push("/checkout") }
   const gallery = productImages(p)
   const [active, setActive] = useState(0)
   const current = gallery[Math.min(active, gallery.length - 1)]
@@ -61,7 +64,7 @@ export default function ProductPage({ params }: { params:{slug:string}}){
             <button className="h-11 w-11 rounded-full border border-zinc-200 grid place-items-center hover:bg-zinc-50"><Heart className="h-4 w-4"/></button>
           </div>
           <div className="mt-3 flex gap-2">
-            <button className="flex-1 h-11 rounded-full bg-sky-500 text-white font-bold text-sm hover:bg-sky-600">Buy Now — Pay on Delivery</button>
+            <button onClick={buyNow} className="flex-1 h-11 rounded-full bg-sky-500 text-white font-bold text-sm hover:bg-sky-600">Buy Now — Pay on Delivery</button>
             <Link href="/quote" className="flex-1 h-11 rounded-full border border-zinc-300 bg-white grid place-items-center text-sm font-bold text-zinc-800 hover:bg-zinc-50">Request Installation</Link>
           </div>
 
