@@ -77,13 +77,16 @@ export default function ProductPage({ params }: { params:{slug:string}}){
           </div>
 
           <div className="mt-6 rounded-2xl border border-zinc-200 p-5">
+            <div className="text-sm font-bold text-zinc-900">Product Description</div>
+            <p className="mt-2 text-sm leading-6 text-zinc-600">{p.description ?? `${p.name} — genuine ${p.brand} stock with local warranty and professional installation by NexVolt engineers. ${p.specs}.`}</p>
+          </div>
+          <div className="mt-4 rounded-2xl border border-zinc-200 p-5">
             <div className="text-sm font-bold text-zinc-900">Specifications</div>
             <table className="mt-3 w-full text-sm">
               <tbody>
-                <tr className="border-b"><td className="py-2.5 text-zinc-500">Power / Capacity</td><td className="py-2.5 font-semibold">550W • 21.5% Eff</td></tr>
-                <tr className="border-b"><td className="py-2.5 text-zinc-500">Brand</td><td className="py-2.5 font-semibold">{p.brand}</td></tr>
-                <tr className="border-b"><td className="py-2.5 text-zinc-500">Category</td><td className="py-2.5 font-semibold">{p.category}</td></tr>
-                <tr><td className="py-2.5 text-zinc-500">Warranty</td><td className="py-2.5 font-semibold">25 years linear • 12 yrs product</td></tr>
+                {(p.specTable ?? [{ k: "Summary", v: p.specs }, { k: "Brand", v: p.brand }, { k: "Category", v: p.category }]).map((s) => (
+                  <tr key={s.k} className="border-b last:border-0"><td className="py-2.5 text-zinc-500">{s.k}</td><td className="py-2.5 font-semibold text-right">{s.v}</td></tr>
+                ))}
               </tbody>
             </table>
             <div className="mt-4 rounded-xl bg-zinc-50 border border-zinc-200 p-3 text-xs text-zinc-600">Need help choosing? <a href="https://wa.me/254700000000" target="_blank" className="text-sky-600 font-bold underline">Chat @nexvolttechke on WhatsApp</a> — reply in 5 mins.</div>

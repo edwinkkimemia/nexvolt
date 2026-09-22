@@ -10,7 +10,7 @@ const tagOptions = ["New", "Featured", "Best Seller", "Sale", "Limited Stock"]
 export default function EditProduct({ params }: { params: { slug: string } }) {
   const [loaded, setLoaded] = useState(false)
   const [missing, setMissing] = useState(false)
-  const [form, setForm] = useState({ name: "", brand: brands[0].name, category: categories[0].name, price: "", sale: "", stock: "0", specs: "", image: "", warranty: "", tags: [] as string[] })
+  const [form, setForm] = useState({ name: "", brand: brands[0].name, category: categories[0].name, price: "", sale: "", stock: "0", specs: "", description: "", image: "", warranty: "", tags: [] as string[] })
   const [gallery, setGallery] = useState<string[]>([])
   const [error, setError] = useState("")
   const [saved, setSaved] = useState(false)
@@ -26,7 +26,7 @@ export default function EditProduct({ params }: { params: { slug: string } }) {
       setForm({
         name: p.name, brand: p.brand, category: p.category,
         price: String(p.price / 100), sale: p.salePrice ? String(p.salePrice / 100) : "",
-        stock: String(p.stock), specs: p.specs || "", image: p.image || "",
+        stock: String(p.stock), specs: p.specs || "", description: p.description || "", image: p.image || "",
         warranty: (p as { warranty?: string }).warranty || "", tags: [...(p.tags || [])],
       })
       const imgs = p.images && p.images.length ? p.images : [p.image]
@@ -54,7 +54,7 @@ export default function EditProduct({ params }: { params: { slug: string } }) {
       price: priceMinor, ...(saleMinor ? { salePrice: saleMinor } : {}),
       rating: products.find((p) => p.slug === params.slug)?.rating ?? 5, stock: stockN,
       image: primary, images: [primary, ...gallery],
-      specs: form.specs.trim(), tags: form.tags as MockProduct["tags"],
+      specs: form.specs.trim(), description: form.description.trim() || undefined, tags: form.tags as MockProduct["tags"],
     }
     try {
       const prev = JSON.parse(localStorage.getItem("nv-admin-products") || "[]")
@@ -83,6 +83,7 @@ export default function EditProduct({ params }: { params: { slug: string } }) {
           <div><label className="text-[11px] font-bold tracking-widest text-zinc-500">STOCK *</label><input value={form.stock} onChange={(e) => set("stock", e.target.value)} type="number" min="0" className="mt-1 w-full h-11 rounded-xl border border-zinc-300 px-3 text-sm outline-none focus:border-zinc-900" /></div>
         </div>
         <div><label className="text-[11px] font-bold tracking-widest text-zinc-500">SHORT SPEC</label><input value={form.specs} onChange={(e) => set("specs", e.target.value)} className="mt-1 w-full h-11 rounded-xl border border-zinc-300 px-3 text-sm outline-none focus:border-zinc-900" /></div>
+        <div><label className="text-[11px] font-bold tracking-widest text-zinc-500">DESCRIPTION (PDP + SEO)</label><textarea value={form.description} onChange={(e) => set("description", e.target.value)} className="mt-1 w-full rounded-xl border border-zinc-300 p-3 text-sm h-20 outline-none focus:border-zinc-900" /></div>
         <ImageUpload label="PRODUCT IMAGE (upload or URL)" value={form.image} onChange={(image) => set("image", image)} />
         <div>
           <label className="text-[11px] font-bold tracking-widest text-zinc-500">GALLERY ({gallery.length + 1} PHOTOS — first is primary)</label>

@@ -16,6 +16,7 @@ export default function NewProduct() {
   const [stock, setStock] = useState("10")
   const [warranty, setWarranty] = useState("")
   const [specs, setSpecs] = useState("")
+  const [description, setDescription] = useState("")
   const [image, setImage] = useState("")
   const [gallery, setGallery] = useState<string[]>([])
   const [tags, setTags] = useState<string[]>(["New"])
@@ -42,7 +43,7 @@ export default function NewProduct() {
       price: priceMinor, ...(saleMinor ? { salePrice: saleMinor } : {}),
       rating: 5, stock: stockN,
       image: primary, images: [primary, ...gallery],
-      specs: specs.trim(), tags,
+      specs: specs.trim(), description: description.trim() || undefined, tags,
       ...(warranty.trim() ? { warranty: warranty.trim() } : {}),
     }
     try {
@@ -60,7 +61,7 @@ export default function NewProduct() {
       <p className="text-sm text-zinc-600 mt-2">{formatKES(saleMinor ?? priceMinor)} • {stock} in stock • visible now in the products list. With PostgreSQL live it writes to Product + Inventory instead.</p>
       <div className="mt-4 flex gap-2 justify-center">
         <Link href="/admin/products" className="h-10 px-6 rounded-full bg-zinc-900 text-white text-sm font-bold inline-flex items-center justify-center">All Products →</Link>
-        <button onClick={() => { setName(""); setPrice(""); setSale(""); setSpecs(""); setImage(""); setGallery([]); setWarranty(""); setTags(["New"]); setSaved(false) }} className="h-10 px-6 rounded-full bg-white border border-zinc-300 text-sm font-bold">Add Another</button>
+        <button onClick={() => { setName(""); setPrice(""); setSale(""); setSpecs(""); setDescription(""); setImage(""); setGallery([]); setWarranty(""); setTags(["New"]); setSaved(false) }} className="h-10 px-6 rounded-full bg-white border border-zinc-300 text-sm font-bold">Add Another</button>
       </div>
     </div>
   )
@@ -80,6 +81,7 @@ export default function NewProduct() {
           <div><label className="text-[11px] font-bold tracking-widest text-zinc-500">STOCK *</label><input value={stock} onChange={(e) => setStock(e.target.value)} type="number" min="0" className="mt-1 w-full h-11 rounded-xl border border-zinc-300 px-3 text-sm outline-none focus:border-zinc-900" /></div>
         </div>
         <div><label className="text-[11px] font-bold tracking-widest text-zinc-500">SHORT SPEC * (card line)</label><input value={specs} onChange={(e) => setSpecs(e.target.value)} placeholder="8kW • MPPT • Wi-Fi • Hybrid" className="mt-1 w-full h-11 rounded-xl border border-zinc-300 px-3 text-sm outline-none focus:border-zinc-900" /></div>
+        <div><label className="text-[11px] font-bold tracking-widest text-zinc-500">DESCRIPTION (PDP + SEO)</label><textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="2–3 sentences: what it does, Nairobi use-case, why this model…" className="mt-1 w-full rounded-xl border border-zinc-300 p-3 text-sm h-20 outline-none focus:border-zinc-900" /></div>
         <div className="grid sm:grid-cols-2 gap-3">
           <ImageUpload label="PRODUCT IMAGE (upload or URL)" value={image} onChange={setImage} />
           <div>
