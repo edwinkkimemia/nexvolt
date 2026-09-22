@@ -1,6 +1,7 @@
 "use client"
+import { useState } from "react"
 import { products } from "@/lib/data"
-import { formatKES } from "@/lib/utils"
+import { formatKES, productImages } from "@/lib/utils"
 import { useCart } from "@/store/cart"
 import { Heart, ShoppingCart, Truck, Shield, Wrench, ChevronRight } from "lucide-react"
 import Link from "next/link"
@@ -9,6 +10,9 @@ import { ProductCard } from "@/components/shop/ProductCard"
 export default function ProductPage({ params }: { params:{slug:string}}){
   const p = products.find(x=>x.slug===params.slug) ?? products[0]
   const add = useCart(s=>s.add)
+  const gallery = productImages(p)
+  const [active, setActive] = useState(0)
+  const current = gallery[Math.min(active, gallery.length - 1)]
   const related = products.filter(x=>x.category===p.category && x.slug!==p.slug).slice(0,4)
   const wa = encodeURIComponent(`Jambo NexVolt — I want to order ${p.name} (${p.brand}) at ${formatKES(p.salePrice ?? p.price)}. SKU: NV-${p.id.padStart(4,"0")} . Delivery to Nairobi?`)
   return (
@@ -25,11 +29,18 @@ export default function ProductPage({ params }: { params:{slug:string}}){
 
       <div className="mx-auto max-w-[1280px] px-6 py-6 grid lg:grid-cols-2 gap-8">
         <div>
-          <div className="aspect-square rounded-2xl border border-zinc-200 bg-zinc-50 p-6 grid place-items-center">
-            <img src={p.image} alt={p.name} className="h-full w-full object-contain"/>
+          <div className="relative aspect-square rounded-2xl border border-zinc-200 bg-zinc-50 p-6 grid place-items-center">
+            <img key={current} src={current} alt={p.name} className="h-full w-full object-contain"/>
+            {gallery.length > 1 && (
+              <span className="absolute bottom-3 right-3 rounded-full bg-zinc-900 text-white text-[11px] font-bold px-2.5 py-1">{Math.min(active, gallery.length - 1) + 1} / {gallery.length}</span>
+            )}
           </div>
           <div className="mt-3 grid grid-cols-4 gap-2">
-            {[1,2,3,4].map(i=><div key={i} className="aspect-square rounded-xl border border-zinc-200 bg-zinc-50 grid place-items-center text-xs text-zinc-400">IMG {i}</div>)}
+            {gallery.map((src, i)=>(
+              <button key={src + i} onClick={()=>setActive(i)} className={`aspect-square rounded-xl border bg-zinc-50 p-1.5 transition ${i===Math.min(active, gallery.length-1) ? "border-zinc-900 ring-2 ring-zinc-900/15" : "border-zinc-200 hover:border-zinc-400"}`}>
+                <img src={src} alt={`${p.name} view ${i + 1}`} className="h-full w-full object-contain"/>
+              </button>
+            ))}
           </div>
           <div className="mt-4 rounded-xl bg-sky-50 border border-sky-200 p-3 text-sm text-sky-800"><strong>Order via WhatsApp:</strong> Get instant stock & delivery quote from @nexvolttechke — reply in 5 mins.</div>
         </div>

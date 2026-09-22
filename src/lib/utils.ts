@@ -11,6 +11,10 @@ export function slugify(s: string) {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
 }
 
+export function productImages(p: { image: string; images?: string[] }) {
+  return p.images && p.images.length ? p.images : [p.image]
+}
+
 export function generateRef(prefix = "NVQ") {
   const d = new Date()
   const y = d.getFullYear()

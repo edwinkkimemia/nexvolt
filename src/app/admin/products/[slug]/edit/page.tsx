@@ -11,6 +11,7 @@ export default function EditProduct({ params }: { params: { slug: string } }) {
   const [loaded, setLoaded] = useState(false)
   const [missing, setMissing] = useState(false)
   const [form, setForm] = useState({ name: "", brand: brands[0].name, category: categories[0].name, price: "", sale: "", stock: "0", specs: "", image: "", warranty: "", tags: [] as string[] })
+  const [gallery, setGallery] = useState<string[]>([])
   const [error, setError] = useState("")
   const [saved, setSaved] = useState(false)
   const set = (k: string, v: string | string[]) => { setForm((f) => ({ ...f, [k]: v })); setSaved(false) }
@@ -28,6 +29,8 @@ export default function EditProduct({ params }: { params: { slug: string } }) {
         stock: String(p.stock), specs: p.specs || "", image: p.image || "",
         warranty: (p as { warranty?: string }).warranty || "", tags: [...(p.tags || [])],
       })
+      const imgs = p.images && p.images.length ? p.images : [p.image]
+      setGallery(imgs.slice(1))
     } catch { setMissing(true) }
     setLoaded(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -45,11 +48,12 @@ export default function EditProduct({ params }: { params: { slug: string } }) {
     if (saleMinor !== undefined && saleMinor >= priceMinor) return setError("Sale price must be below the regular price.")
     const stockN = parseInt(form.stock)
     if (isNaN(stockN) || stockN < 0) return setError("Enter a valid stock quantity.")
+    const primary = form.image || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600"
     const entry: MockProduct = {
       id: params.slug, slug: params.slug, name: form.name.trim(), brand: form.brand, category: form.category,
       price: priceMinor, ...(saleMinor ? { salePrice: saleMinor } : {}),
       rating: products.find((p) => p.slug === params.slug)?.rating ?? 5, stock: stockN,
-      image: form.image || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600",
+      image: primary, images: [primary, ...gallery],
       specs: form.specs.trim(), tags: form.tags as MockProduct["tags"],
     }
     try {
@@ -80,6 +84,18 @@ export default function EditProduct({ params }: { params: { slug: string } }) {
         </div>
         <div><label className="text-[11px] font-bold tracking-widest text-zinc-500">SHORT SPEC</label><input value={form.specs} onChange={(e) => set("specs", e.target.value)} className="mt-1 w-full h-11 rounded-xl border border-zinc-300 px-3 text-sm outline-none focus:border-zinc-900" /></div>
         <ImageUpload label="PRODUCT IMAGE (upload or URL)" value={form.image} onChange={(image) => set("image", image)} />
+        <div>
+          <label className="text-[11px] font-bold tracking-widest text-zinc-500">GALLERY ({gallery.length + 1} PHOTOS — first is primary)</label>
+          <div className="mt-1 flex flex-wrap gap-2">
+            {gallery.map((src, i) => (
+              <span key={src + i} className="relative h-16 w-16 rounded-xl overflow-hidden border border-zinc-200">
+                <img src={src} alt={`gallery ${i + 2}`} className="h-full w-full object-cover" />
+                <button type="button" onClick={() => setGallery((g) => g.filter((_, x) => x !== i))} aria-label="Remove photo" className="absolute top-0.5 right-0.5 h-5 w-5 rounded-full bg-zinc-900 text-white text-[10px] grid place-items-center">✕</button>
+              </span>
+            ))}
+          </div>
+          <div className="mt-2"><ImageUpload label="ADD GALLERY PHOTO" value="" onChange={(url) => { if (url) setGallery((g) => [...g, url]) }} /></div>
+        </div>
         <div><label className="text-[11px] font-bold tracking-widest text-zinc-500">WARRANTY</label><input value={form.warranty} onChange={(e) => set("warranty", e.target.value)} className="mt-1 w-full h-11 rounded-xl border border-zinc-300 px-3 text-sm outline-none focus:border-zinc-900" /></div>
         <div><label className="text-[11px] font-bold tracking-widest text-zinc-500">TAGS</label><div className="mt-1 flex flex-wrap gap-2">{tagOptions.map((t) => <button key={t} type="button" onClick={() => toggleTag(t)} className={`h-8 px-3 rounded-full text-xs font-bold border ${form.tags.includes(t) ? "bg-zinc-900 text-white border-zinc-900" : "bg-white text-zinc-600 border-zinc-300"}`}>{t}</button>)}</div></div>
         {error && <div className="rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm p-3">{error}</div>}

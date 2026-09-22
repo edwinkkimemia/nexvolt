@@ -17,6 +17,7 @@ export default function NewProduct() {
   const [warranty, setWarranty] = useState("")
   const [specs, setSpecs] = useState("")
   const [image, setImage] = useState("")
+  const [gallery, setGallery] = useState<string[]>([])
   const [tags, setTags] = useState<string[]>(["New"])
   const [error, setError] = useState("")
   const [saved, setSaved] = useState(false)
@@ -35,11 +36,12 @@ export default function NewProduct() {
     if (isNaN(stockN) || stockN < 0) return setError("Enter a valid stock quantity.")
     if (!specs.trim()) return setError("Add a short specification line (shown on cards).")
     const slug = `${slugify(name)}-${Date.now().toString(36)}`
+    const primary = image.trim() || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600"
     const product = {
       id: `n${Date.now()}`, slug, name: name.trim(), brand, category,
       price: priceMinor, ...(saleMinor ? { salePrice: saleMinor } : {}),
       rating: 5, stock: stockN,
-      image: image.trim() || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600",
+      image: primary, images: [primary, ...gallery],
       specs: specs.trim(), tags,
       ...(warranty.trim() ? { warranty: warranty.trim() } : {}),
     }
@@ -58,7 +60,7 @@ export default function NewProduct() {
       <p className="text-sm text-zinc-600 mt-2">{formatKES(saleMinor ?? priceMinor)} • {stock} in stock • visible now in the products list. With PostgreSQL live it writes to Product + Inventory instead.</p>
       <div className="mt-4 flex gap-2 justify-center">
         <Link href="/admin/products" className="h-10 px-6 rounded-full bg-zinc-900 text-white text-sm font-bold inline-flex items-center justify-center">All Products →</Link>
-        <button onClick={() => { setName(""); setPrice(""); setSale(""); setSpecs(""); setImage(""); setWarranty(""); setTags(["New"]); setSaved(false) }} className="h-10 px-6 rounded-full bg-white border border-zinc-300 text-sm font-bold">Add Another</button>
+        <button onClick={() => { setName(""); setPrice(""); setSale(""); setSpecs(""); setImage(""); setGallery([]); setWarranty(""); setTags(["New"]); setSaved(false) }} className="h-10 px-6 rounded-full bg-white border border-zinc-300 text-sm font-bold">Add Another</button>
       </div>
     </div>
   )
@@ -80,6 +82,18 @@ export default function NewProduct() {
         <div><label className="text-[11px] font-bold tracking-widest text-zinc-500">SHORT SPEC * (card line)</label><input value={specs} onChange={(e) => setSpecs(e.target.value)} placeholder="8kW • MPPT • Wi-Fi • Hybrid" className="mt-1 w-full h-11 rounded-xl border border-zinc-300 px-3 text-sm outline-none focus:border-zinc-900" /></div>
         <div className="grid sm:grid-cols-2 gap-3">
           <ImageUpload label="PRODUCT IMAGE (upload or URL)" value={image} onChange={setImage} />
+          <div>
+            <label className="text-[11px] font-bold tracking-widest text-zinc-500">GALLERY ({gallery.length + 1} PHOTOS — first is primary)</label>
+            <div className="mt-1 flex flex-wrap gap-2">
+              {gallery.map((src, i) => (
+                <span key={src + i} className="relative h-16 w-16 rounded-xl overflow-hidden border border-zinc-200">
+                  <img src={src} alt={`gallery ${i + 2}`} className="h-full w-full object-cover" />
+                  <button type="button" onClick={() => setGallery((g) => g.filter((_, x) => x !== i))} aria-label="Remove photo" className="absolute top-0.5 right-0.5 h-5 w-5 rounded-full bg-zinc-900 text-white text-[10px] grid place-items-center">✕</button>
+                </span>
+              ))}
+            </div>
+            <div className="mt-2"><ImageUpload label="ADD GALLERY PHOTO" value="" onChange={(url) => { if (url) setGallery((g) => [...g, url]) }} /></div>
+          </div>
           <div><label className="text-[11px] font-bold tracking-widest text-zinc-500">WARRANTY</label><input value={warranty} onChange={(e) => setWarranty(e.target.value)} placeholder="5 years" className="mt-1 w-full h-11 rounded-xl border border-zinc-300 px-3 text-sm outline-none focus:border-zinc-900" /></div>
         </div>
         <div><label className="text-[11px] font-bold tracking-widest text-zinc-500">TAGS</label><div className="mt-1 flex flex-wrap gap-2">{tagOptions.map((t) => <button key={t} type="button" onClick={() => toggleTag(t)} className={`h-8 px-3 rounded-full text-xs font-bold border ${tags.includes(t) ? "bg-zinc-900 text-white border-zinc-900" : "bg-white text-zinc-600 border-zinc-300"}`}>{t}</button>)}</div></div>
